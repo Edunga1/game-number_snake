@@ -1,5 +1,5 @@
 import { Direction } from '../types';
-import { CANVAS_WIDTH, CANVAS_HEIGHT, GRID_WIDTH, DPAD_AREA_Y, DPAD_BTN_SIZE } from '../constants';
+import { CANVAS_WIDTH, CANVAS_HEIGHT, DPAD_AREA_Y, DPAD_BTN_SIZE } from '../constants';
 
 export interface JoystickState {
   active: boolean;
@@ -9,8 +9,8 @@ export interface JoystickState {
   thumbY: number;
 }
 
-// D-pad button rects in canvas coordinates (centered under grid)
-const cx = GRID_WIDTH / 2;
+// D-pad button rects in canvas coordinates (centered on full width)
+const cx = CANVAS_WIDTH / 2;
 const cy = DPAD_AREA_Y + (CANVAS_HEIGHT - DPAD_AREA_Y) / 2;
 const s = DPAD_BTN_SIZE;
 
