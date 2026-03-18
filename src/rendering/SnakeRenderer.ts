@@ -31,12 +31,17 @@ export class SnakeRenderer {
       let scale = 1;
       let glowing = false;
 
-      // Merge animation
-      if (mergeInfo && (i === mergeInfo.index || i === mergeInfo.index + 1)) {
-        if (mergeInfo.phase === 'glow') {
-          glowing = true;
-        } else if (mergeInfo.phase === 'shrink' && i === mergeInfo.index + 1) {
-          scale = 1 - mergeInfo.progress * 0.8;
+      // Merge animation (multiple pairs per pass)
+      if (mergeInfo) {
+        for (const pair of mergeInfo.pairs) {
+          if (i === pair.index || i === pair.index + 1) {
+            if (mergeInfo.phase === 'glow') {
+              glowing = true;
+            } else if (mergeInfo.phase === 'shrink' && i === pair.index + 1) {
+              scale = 1 - mergeInfo.progress * 0.8;
+            }
+            break;
+          }
         }
       }
 
