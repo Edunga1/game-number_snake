@@ -15,36 +15,37 @@ export class HudRenderer {
     ctx.fillStyle = COLOR_HUD_BG;
     ctx.fillRect(0, 0, width, height);
 
-    // Line 1: ROUND n (left) + Score/Target (right)
-    const cy = 18;
+    // Line 1: ROUND n (centered)
+    ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-
     ctx.fillStyle = '#00d2ff';
-    ctx.font = 'bold 14px monospace';
-    ctx.textAlign = 'left';
-    ctx.fillText(`R${round}`, 10, cy);
+    ctx.font = 'bold 16px monospace';
+    ctx.fillText(`ROUND ${round}`, width / 2, 18);
 
-    ctx.font = 'bold 14px monospace';
+    // Line 2: Score / Target (centered)
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 16px monospace';
     const scoreStr = `${score}`;
     const scoreW = ctx.measureText(scoreStr).width;
-    ctx.font = '11px monospace';
-    const targetStr = `/${targetScore}`;
+    ctx.font = '12px monospace';
+    const targetStr = ` / ${targetScore}`;
     const targetW = ctx.measureText(targetStr).width;
+    const totalW = scoreW + targetW;
+    const startX = (width - totalW) / 2;
 
-    const scoreX = width - 10 - scoreW - targetW;
-    ctx.font = 'bold 14px monospace';
+    ctx.font = 'bold 16px monospace';
     ctx.textAlign = 'left';
     ctx.fillStyle = '#fff';
-    ctx.fillText(scoreStr, scoreX, cy);
+    ctx.fillText(scoreStr, startX, 44);
     ctx.fillStyle = '#666';
-    ctx.font = '11px monospace';
-    ctx.fillText(targetStr, scoreX + scoreW, cy);
+    ctx.font = '12px monospace';
+    ctx.fillText(targetStr, startX + scoreW, 44);
 
-    // Line 2: Progress bar
+    // Line 3: Full-width progress bar
     const barX = 10;
-    const barY = 38;
+    const barY = 68;
     const barW = width - 20;
-    const barH = 6;
+    const barH = 7;
     const fillRatio = Math.min(score / targetScore, 1);
 
     ctx.fillStyle = '#222';
