@@ -43,9 +43,15 @@ export class InputManager {
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     window.addEventListener('keydown', (e) => this.onKeyDown(e));
+
+    // Touch events
     canvas.addEventListener('touchstart', (e) => this.onTouchStart(e), { passive: false });
     canvas.addEventListener('touchmove', (e) => this.onTouchMove(e), { passive: false });
     canvas.addEventListener('touchend', (e) => this.onTouchEnd(e), { passive: false });
+
+    // Mouse events (for D-pad on desktop)
+    canvas.addEventListener('mousedown', (e) => this.onMouseDown(e));
+    canvas.addEventListener('mouseup', () => this.onMouseUp());
   }
 
   private screenToCanvas(clientX: number, clientY: number): { x: number; y: number } {
@@ -91,6 +97,7 @@ export class InputManager {
       this.isDpadTouch = true;
       this.activeDpadDir = dpadDir;
       this.tryBuffer(dpadDir);
+      navigator.vibrate?.(15);
       return;
     }
 
@@ -110,12 +117,12 @@ export class InputManager {
     const t = e.touches[0];
 
     if (this.isDpadTouch) {
-      // Update D-pad selection as finger moves
       const canvasPos = this.screenToCanvas(t.clientX, t.clientY);
       const dpadDir = this.hitDpad(canvasPos.x, canvasPos.y);
       if (dpadDir !== null && dpadDir !== this.activeDpadDir) {
         this.activeDpadDir = dpadDir;
         this.tryBuffer(dpadDir);
+        navigator.vibrate?.(15);
       } else if (dpadDir === null) {
         this.activeDpadDir = null;
       }
@@ -147,8 +154,21 @@ export class InputManager {
     this.joystick.active = false;
   }
 
+  // Mouse support for D-pad (desktop)
+  private onMouseDown(e: MouseEvent) {
+    const canvasPos = this.screenToCanvas(e.clientX, e.clientY);
+    const dpadDir = this.hitDpad(canvasPos.x, canvasPos.y);
+    if (dpadDir !== null) {
+      this.activeDpadDir = dpadDir;
+      this.tryBuffer(dpadDir);
+    }
+  }
+
+  private onMouseUp() {
+    this.activeDpadDir = null;
+  }
+
   private tryBuffer(dir: Direction) {
-    // Prevent 180-degree reversal
     if ((dir + 2) % 4 === this.currentDir) return;
     this.bufferedDir = dir;
   }
