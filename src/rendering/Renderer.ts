@@ -12,7 +12,7 @@ import { JoystickState, DPAD_RECTS } from '../core/InputManager';
 import { getValueColor } from '../utils/colors';
 import {
   CANVAS_WIDTH, CANVAS_HEIGHT, GRID_WIDTH, GRID_HEIGHT, CELL_SIZE, COLOR_BG, COLOR_HUD_BG,
-  COLOR_SNAKE_HEAD, DPAD_BTN_SIZE, PLAY_Y_OFFSET, PLAY_ROWS,
+  COLOR_SNAKE_HEAD, PLAY_Y_OFFSET, PLAY_ROWS,
 } from '../constants';
 
 export class Renderer {
@@ -135,7 +135,6 @@ export class Renderer {
     ctx.fillStyle = COLOR_HUD_BG;
     ctx.fillRect(0, GRID_HEIGHT, CANVAS_WIDTH, CANVAS_HEIGHT - GRID_HEIGHT);
 
-    const s = DPAD_BTN_SIZE;
     const arrows: [Direction, string][] = [
       [Direction.Up, '▲'],
       [Direction.Down, '▼'],
@@ -147,15 +146,15 @@ export class Renderer {
       const r = DPAD_RECTS[dir];
       const isActive = dir === activeDir;
 
-      // Press effect: shrink slightly when active
-      const inset = isActive ? 3 : 0;
+      const inset = isActive ? 2 : 0;
       const bx = r.x + inset;
       const by = r.y + inset;
-      const bs = s - inset * 2;
+      const bw = r.w - inset * 2;
+      const bh = r.h - inset * 2;
 
       ctx.fillStyle = isActive ? 'rgba(0,210,255,0.25)' : 'rgba(255,255,255,0.06)';
       ctx.beginPath();
-      ctx.roundRect(bx, by, bs, bs, 12);
+      ctx.roundRect(bx, by, bw, bh, 10);
       ctx.fill();
 
       ctx.strokeStyle = isActive ? 'rgba(0,210,255,0.6)' : 'rgba(255,255,255,0.12)';
@@ -166,7 +165,7 @@ export class Renderer {
       ctx.font = `bold ${isActive ? 22 : 24}px sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(symbol, r.x + s / 2, r.y + s / 2);
+      ctx.fillText(symbol, r.x + r.w / 2, r.y + r.h / 2);
     }
   }
 

@@ -1,5 +1,5 @@
 import { Direction } from '../types';
-import { CANVAS_WIDTH, CANVAS_HEIGHT, GRID_WIDTH, DPAD_AREA_Y, DPAD_BTN_SIZE, CELL_SIZE, PLAY_Y_OFFSET, PLAY_ROWS } from '../constants';
+import { CANVAS_WIDTH, CANVAS_HEIGHT, GRID_WIDTH, DPAD_AREA_Y, CELL_SIZE, PLAY_Y_OFFSET, PLAY_ROWS } from '../constants';
 
 export interface JoystickState {
   active: boolean;
@@ -9,16 +9,22 @@ export interface JoystickState {
   thumbY: number;
 }
 
-// D-pad button rects in canvas coordinates (centered on full width)
-const cx = CANVAS_WIDTH / 2;
-const cy = DPAD_AREA_Y + (CANVAS_HEIGHT - DPAD_AREA_Y) / 2;
-const s = DPAD_BTN_SIZE;
+// D-pad button rects — fill the bottom area
+const pad = 8;
+const gap = 8;
+const areaH = CANVAS_HEIGHT - DPAD_AREA_Y;
+const sideW = 120;
+const sideH = areaH - pad * 2;
+const midL = pad + sideW + gap;
+const midR = CANVAS_WIDTH - pad - sideW - gap;
+const midW = midR - midL;
+const midH = (sideH - gap) / 2;
 
 export const DPAD_RECTS = {
-  [Direction.Up]:    { x: cx - s / 2, y: cy - s - 5, w: s, h: s },
-  [Direction.Down]:  { x: cx - s / 2, y: cy + 5,     w: s, h: s },
-  [Direction.Left]:  { x: cx - s / 2 - s - 15, y: cy - s / 2, w: s, h: s },
-  [Direction.Right]: { x: cx + s / 2 + 15,     y: cy - s / 2, w: s, h: s },
+  [Direction.Up]:    { x: midL, y: DPAD_AREA_Y + pad, w: midW, h: midH },
+  [Direction.Down]:  { x: midL, y: DPAD_AREA_Y + pad + midH + gap, w: midW, h: midH },
+  [Direction.Left]:  { x: pad, y: DPAD_AREA_Y + pad, w: sideW, h: sideH },
+  [Direction.Right]: { x: CANVAS_WIDTH - pad - sideW, y: DPAD_AREA_Y + pad, w: sideW, h: sideH },
 };
 
 export class InputManager {
