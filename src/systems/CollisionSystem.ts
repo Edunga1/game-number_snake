@@ -6,31 +6,28 @@ import { GRID_COLS, PLAY_ROWS, PLAY_Y_OFFSET } from '../constants';
 
 export interface CollisionResult {
   self: boolean;
-  wall: boolean;
   food: FoodItem | null;
   foodDangerous: boolean;
 }
 
-/** Check if position is outside play area bounds */
-function isOutOfBounds(pos: Vec2): boolean {
-  return pos.x < 0 || pos.x >= GRID_COLS ||
-    pos.y < PLAY_Y_OFFSET || pos.y >= PLAY_Y_OFFSET + PLAY_ROWS;
+/** Wrap position to play area bounds */
+export function wrapPos(pos: Vec2): Vec2 {
+  let { x, y } = pos;
+  if (x < 0) x = GRID_COLS - 1;
+  else if (x >= GRID_COLS) x = 0;
+  if (y < PLAY_Y_OFFSET) y = PLAY_Y_OFFSET + PLAY_ROWS - 1;
+  else if (y >= PLAY_Y_OFFSET + PLAY_ROWS) y = PLAY_Y_OFFSET;
+  return { x, y };
 }
 
 export class CollisionSystem {
   check(snake: Snake, foodManager: FoodManager): CollisionResult {
-    const nextPos = snake.nextHeadPos();
+    const nextPos = wrapPos(snake.nextHeadPos());
     const result: CollisionResult = {
       self: false,
-      wall: false,
       food: null,
       foodDangerous: false,
     };
-
-    if (isOutOfBounds(nextPos)) {
-      result.wall = true;
-      return result;
-    }
 
     // Food collision
     const food = foodManager.getAt(nextPos);
