@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="76.8" fill="#1a1a2e"/>
+  <rect x="61.44" y="61.44" width="389.12" height="389.12" rx="40.96" fill="#0f3460"/>
+  <!-- Snake body -->
+  <rect x="92.16" y="230.4" width="92.16" height="92.16" rx="15.36" fill="#533483"/>
+  <rect x="194.56" y="230.4" width="92.16" height="92.16" rx="15.36" fill="#533483"/>
+  <!-- Snake head -->
+  <rect x="296.96" y="230.4" width="112.64" height="92.16" rx="20.48" fill="#e94560"/>
+  <!-- Numbers -->
+  <text x="138.24" y="296.96" text-anchor="middle" fill="white" font-family="monospace" font-weight="bold" font-size="61.44">1</text>
+  <text x="240.64" y="296.96" text-anchor="middle" fill="white" font-family="monospace" font-weight="bold" font-size="61.44">2</text>
+  <text x="353.28" y="296.96" text-anchor="middle" fill="white" font-family="monospace" font-weight="bold" font-size="61.44">3</text>
+</svg>
