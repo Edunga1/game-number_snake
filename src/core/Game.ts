@@ -11,7 +11,7 @@ import { GameLoop } from './GameLoop';
 import { Renderer } from '../rendering/Renderer';
 import {
   CANVAS_WIDTH, CANVAS_HEIGHT, SNAKE_TICK_MS,
-  INITIAL_LIVES, INITIAL_HEAD_VALUE,
+  INITIAL_LIVES,
   GRID_COLS, PLAY_Y_OFFSET, PLAY_ROWS, CELL_SIZE,
 } from '../constants';
 
@@ -22,6 +22,7 @@ export class Game {
   private foodSpawner = new FoodSpawner();
   private collision = new CollisionSystem();
   private mergeSystem = new MergeSystem();
+  // @ts-ignore reserved for hard mode
   private decaySystem = new DecaySystem();
   private roundSystem = new RoundSystem();
   private input: InputManager;
@@ -65,10 +66,9 @@ export class Game {
 
   private startRound() {
     const config = this.roundSystem.getRoundConfig();
-    this.snake.reset();
-    this.snake.head.value = INITIAL_HEAD_VALUE;
+    this.snake.reset(config.round);
     this.food.clear();
-    this.foodSpawner.spawn(this.food, this.snake, config.maxFoodValue);
+    this.foodSpawner.spawn(this.food, this.snake);
     this.loop.setTickMs(config.tickMs);
     this.state = 'round_start';
   }
@@ -83,7 +83,6 @@ export class Game {
   private tick() {
     if (this.state !== 'playing') return;
 
-    const config = this.roundSystem.getRoundConfig();
     const dir = this.input.consumeDirection();
     this.snake.direction = dir;
 
@@ -121,7 +120,7 @@ export class Game {
       }
 
       // Spawn replacement
-      this.foodSpawner.spawnSingle(this.food, this.snake, config.maxFoodValue);
+      this.foodSpawner.spawnSingle(this.food, this.snake);
     } else {
       // Normal move
       this.snake.move();
@@ -141,11 +140,11 @@ export class Game {
       }
     }
 
-    // Head decay
-    if (this.decaySystem.update(this.snake)) {
-      this.loseLife();
-      return;
-    }
+    // Tail decay (disabled — reserved for hard mode)
+    // if (this.state === 'playing' && this.decaySystem.update(this.snake)) {
+    //   this.loseLife();
+    //   return;
+    // }
   }
 
   private loseLife() {
@@ -155,8 +154,7 @@ export class Game {
       this.snake.alive = false;
     } else {
       // Respawn snake
-      this.snake.reset();
-      this.snake.head.value = INITIAL_HEAD_VALUE;
+      this.snake.reset(this.roundSystem.getRoundConfig().round);
       this.input.setDirection(this.snake.direction);
     }
   }

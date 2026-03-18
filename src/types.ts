@@ -37,6 +37,5 @@ export interface MergeEvent {
 export interface RoundConfig {
   round: number;
   targetScore: number;
-  maxFoodValue: number;
   tickMs: number;
 }
