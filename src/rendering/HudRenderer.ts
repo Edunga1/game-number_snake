@@ -1,5 +1,5 @@
 import { Snake } from '../entities/Snake';
-import { CELL_SIZE, GRID_COLS, HUD_ROWS, COLOR_HUD_BG } from '../constants';
+import { CANVAS_WIDTH, CELL_SIZE, HUD_ROWS, COLOR_HUD_BG } from '../constants';
 
 export class HudRenderer {
   render(
@@ -9,7 +9,7 @@ export class HudRenderer {
     round: number,
     targetScore: number,
   ) {
-    const width = GRID_COLS * CELL_SIZE;
+    const width = CANVAS_WIDTH;
     const height = HUD_ROWS * CELL_SIZE;
 
     ctx.fillStyle = COLOR_HUD_BG;
