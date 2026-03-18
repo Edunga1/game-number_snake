@@ -40,8 +40,8 @@ export class FoodSpawner {
   }
 
   private pickFoodValue(snake: Snake, maxFoodValue: number): FoodPick {
-    // ~5% chance for merge item (1 in 20)
-    if (Math.random() < 0.05) {
+    // ~10% chance for merge item (1 in 10)
+    if (Math.random() < 0.10) {
       return { value: 0, type: 'merge' };
     }
 
