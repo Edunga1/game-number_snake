@@ -1,10 +1,10 @@
 // Grid — portrait layout for mobile (14x20 = 280 cells, same as original)
 export const CELL_SIZE = 28;
 export const GRID_COLS = 14;
-export const GRID_ROWS = 23;
-export const HUD_ROWS = 3;
+export const GRID_ROWS = 22;
+export const HUD_ROWS = 2;
 export const PLAY_ROWS = GRID_ROWS - HUD_ROWS; // 20
-export const PLAY_Y_OFFSET = HUD_ROWS; // play area starts at row 3
+export const PLAY_Y_OFFSET = HUD_ROWS; // play area starts at row 2
 export const GRID_WIDTH = GRID_COLS * CELL_SIZE; // 392
 export const SIDE_PANEL_WIDTH = 44;
 export const CANVAS_WIDTH = GRID_WIDTH + SIDE_PANEL_WIDTH; // 436
