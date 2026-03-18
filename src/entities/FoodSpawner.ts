@@ -3,7 +3,7 @@ import { Vec2 } from '../utils/Vec2';
 import { FoodManager } from './Food';
 import { Snake } from './Snake';
 import {
-  GRID_COLS, PLAY_ROWS, PLAY_Y_OFFSET, FOOD_COUNT_TARGET,
+  GRID_COLS, PLAY_ROWS, PLAY_Y_OFFSET, FOOD_INITIAL_COUNT,
   FOOD_CHANCE_MEANINGFUL, FOOD_CHANCE_EDIBLE, FOOD_CHANCE_DANGEROUS,
 } from '../constants';
 import { weightedRandom } from '../utils/random';
@@ -15,7 +15,7 @@ interface FoodPick {
 
 export class FoodSpawner {
   spawn(foodManager: FoodManager, snake: Snake, maxFoodValue: number): void {
-    while (foodManager.items.length < FOOD_COUNT_TARGET) {
+    while (foodManager.items.length < FOOD_INITIAL_COUNT) {
       const pos = this.findEmptyCell(foodManager, snake);
       if (!pos) break;
       const pick = this.pickFoodValue(snake, maxFoodValue);
