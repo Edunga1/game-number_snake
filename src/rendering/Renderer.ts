@@ -26,7 +26,6 @@ export class Renderer {
     score: number,
     round: number,
     targetScore: number,
-    advanceReady: boolean,
     state: GameState,
     _dt: number,
     roundClearBonus = 0,
@@ -35,7 +34,7 @@ export class Renderer {
     ctx.fillStyle = COLOR_BG;
     ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-    this.hudRenderer.render(ctx, snake, score, round, targetScore, advanceReady);
+    this.hudRenderer.render(ctx, snake, score, round, targetScore);
     this.grid.render(ctx);
     this.wallRenderer.render(ctx);
     this.foodRenderer.render(ctx, food, snake);

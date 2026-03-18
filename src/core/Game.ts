@@ -15,14 +15,7 @@ import {
   ROUND_SPEED_DECREASE, MIN_TICK_MS,
   ROUND_CLEAR_POP_MS, ROUND_CLEAR_BONUS_BASE, MERGE_BASE_SCORE,
   FOOD_SPAWN_INTERVAL_MS, FOOD_COUNT_MAX,
-  GRID_COLS, HUD_ROWS,
 } from '../constants';
-
-// HUD button bounds
-const BTN_W = 100;
-const BTN_H = 36;
-const BTN_X = GRID_COLS * CELL_SIZE - BTN_W - 10;
-const BTN_Y = (HUD_ROWS * CELL_SIZE - BTN_H) / 2;
 
 export class Game {
   private ctx: CanvasRenderingContext2D;
@@ -66,37 +59,10 @@ export class Game {
           this.handleAction();
         }
       }
-      if (e.key === 'Enter' && this.advanceReady && this.state === 'playing') this.advanceRound();
     });
-    canvas.addEventListener('touchstart', (e) => {
+    canvas.addEventListener('touchstart', () => {
       if (this.state === 'ready' || this.state === 'game_over') {
         this.handleAction();
-        return;
-      }
-      // Check HUD button tap
-      if (this.advanceReady && this.state === 'playing') {
-        const touch = e.touches[0];
-        const rect = canvas.getBoundingClientRect();
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
-        const tx = (touch.clientX - rect.left) * scaleX;
-        const ty = (touch.clientY - rect.top) * scaleY;
-        if (tx >= BTN_X && tx <= BTN_X + BTN_W && ty >= BTN_Y && ty <= BTN_Y + BTN_H) {
-          e.preventDefault();
-          this.advanceRound();
-        }
-      }
-    }, { passive: false });
-    canvas.addEventListener('click', (e) => {
-      if (this.advanceReady && this.state === 'playing') {
-        const rect = canvas.getBoundingClientRect();
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
-        const cx = (e.clientX - rect.left) * scaleX;
-        const cy = (e.clientY - rect.top) * scaleY;
-        if (cx >= BTN_X && cx <= BTN_X + BTN_W && cy >= BTN_Y && cy <= BTN_Y + BTN_H) {
-          this.advanceRound();
-        }
       }
     });
 
@@ -237,7 +203,11 @@ export class Game {
         }
 
         this.score += this.mergeSystem.consumeScore();
-        this.state = 'playing';
+        if (this.advanceReady) {
+          this.advanceRound();
+        } else {
+          this.state = 'playing';
+        }
       }
     }
 
@@ -282,7 +252,6 @@ export class Game {
       this.score,
       this.round,
       this.targetScore,
-      this.advanceReady,
       this.state,
       dt,
       clearBonus,

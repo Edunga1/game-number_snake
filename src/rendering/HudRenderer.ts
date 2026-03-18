@@ -1,12 +1,6 @@
 import { Snake } from '../entities/Snake';
 import { CELL_SIZE, GRID_COLS, HUD_ROWS, COLOR_HUD_BG, COLOR_TEXT } from '../constants';
 
-// Button bounds (must match Game.ts)
-const BTN_W = 100;
-const BTN_H = 36;
-const BTN_X = GRID_COLS * CELL_SIZE - BTN_W - 10;
-const BTN_Y = (HUD_ROWS * CELL_SIZE - BTN_H) / 2;
-
 export class HudRenderer {
   render(
     ctx: CanvasRenderingContext2D,
@@ -14,7 +8,6 @@ export class HudRenderer {
     score: number,
     round: number,
     targetScore: number,
-    advanceReady: boolean,
   ) {
     const width = GRID_COLS * CELL_SIZE;
     const height = HUD_ROWS * CELL_SIZE;
@@ -41,7 +34,8 @@ export class HudRenderer {
     const fillRatio = Math.min(score / targetScore, 1);
     ctx.fillStyle = '#333';
     ctx.fillRect(barX, barY, barW, barH);
-    ctx.fillStyle = advanceReady ? '#4ecca3' : '#00d2ff';
+    const barColor = fillRatio >= 1 ? '#4ecca3' : '#00d2ff';
+    ctx.fillStyle = barColor;
     ctx.fillRect(barX, barY, barW * fillRatio, barH);
 
     // Center: Head value + snake length
@@ -53,32 +47,8 @@ export class HudRenderer {
     ctx.font = '11px monospace';
     ctx.fillText(`LEN:${snake.segments.length}`, width / 2, y + 10);
 
-    // Right: NEXT button or tail preview
-    if (advanceReady) {
-      this.renderNextButton(ctx);
-    } else {
-      this.renderTailPreview(ctx, snake, y);
-    }
-  }
-
-  private renderNextButton(ctx: CanvasRenderingContext2D) {
-    const pulse = Math.sin(performance.now() / 300);
-
-    ctx.shadowColor = '#4ecca3';
-    ctx.shadowBlur = 8 + pulse * 4;
-    ctx.fillStyle = '#4ecca3';
-    ctx.beginPath();
-    ctx.roundRect(BTN_X, BTN_Y, BTN_W, BTN_H, 6);
-    ctx.fill();
-
-    ctx.shadowColor = 'transparent';
-    ctx.shadowBlur = 0;
-
-    ctx.fillStyle = '#1a1a2e';
-    ctx.font = 'bold 14px monospace';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('NEXT ▶', BTN_X + BTN_W / 2, BTN_Y + BTN_H / 2);
+    // Right: tail preview
+    this.renderTailPreview(ctx, snake, y);
   }
 
   private renderTailPreview(ctx: CanvasRenderingContext2D, snake: Snake, y: number) {
