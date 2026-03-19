@@ -34,6 +34,7 @@ export class Renderer {
     state: GameState,
     _dt: number,
     roundClearBonus = 0,
+    roundClearHeadBonus = 0,
     showTutorial = false,
     joystick?: JoystickState,
     activeDpadDir?: Direction | null,
@@ -67,7 +68,7 @@ export class Renderer {
     }
 
     if (state === 'round_clear') {
-      this.renderRoundClear(ctx, round, roundClearBonus);
+      this.renderRoundClear(ctx, round, roundClearBonus, roundClearHeadBonus);
     } else if (state === 'ready' && showTutorial) {
       this.renderTutorial(ctx);
     } else if (state === 'ready') {
@@ -482,20 +483,27 @@ export class Renderer {
 
   // ── Overlays ──
 
-  private renderRoundClear(ctx: CanvasRenderingContext2D, round: number, bonus: number) {
+  private renderRoundClear(ctx: CanvasRenderingContext2D, round: number, bonus: number, headBonus: number) {
     ctx.fillStyle = 'rgba(0,0,0,0.5)';
     ctx.fillRect(0, 0, CANVAS_WIDTH, GRID_HEIGHT);
 
+    const cx = CANVAS_WIDTH / 2;
     ctx.fillStyle = '#4ecca3';
     ctx.font = 'bold 28px monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(`ROUND ${round} CLEAR!`, CANVAS_WIDTH / 2, GRID_HEIGHT / 2 - 20);
+    ctx.fillText(`ROUND ${round} CLEAR!`, cx, GRID_HEIGHT / 2 - 30);
 
     if (bonus > 0) {
       ctx.fillStyle = '#ffd700';
       ctx.font = 'bold 20px monospace';
-      ctx.fillText(`+${bonus} BONUS`, CANVAS_WIDTH / 2, GRID_HEIGHT / 2 + 20);
+      ctx.fillText(`+${bonus} BONUS`, cx, GRID_HEIGHT / 2 + 10);
+    }
+
+    if (headBonus > 0) {
+      ctx.fillStyle = '#e94560';
+      ctx.font = 'bold 16px monospace';
+      ctx.fillText(`+${headBonus} HEAD BONUS`, cx, GRID_HEIGHT / 2 + 40);
     }
   }
 

@@ -41,6 +41,7 @@ export class Game {
     lastPopTime: number;
     segmentScore: number;
     bonus: number;
+    headBonus: number;
     phase: 'popping' | 'showing';
     showStartTime: number;
   } | null = null;
@@ -55,16 +56,19 @@ export class Game {
 
     window.addEventListener('keydown', (e) => {
       if (e.key === ' ') {
-        if (this.state === 'playing') {
-          this.spawnMergeItem();
-        } else {
-          this.handleAction();
-        }
+        this.handleAction();
       }
     });
-    canvas.addEventListener('touchstart', () => {
-      if (this.state === 'ready' || this.state === 'game_over') {
+    canvas.addEventListener('touchstart', (e) => {
+      if (this.state === 'ready') {
         this.handleAction();
+      } else if (this.state === 'game_over') {
+        this.handleGameOverTap(e);
+      }
+    });
+    canvas.addEventListener('mousedown', (e) => {
+      if (this.state === 'game_over') {
+        this.handleGameOverClick(e);
       }
     });
 
@@ -95,15 +99,39 @@ export class Game {
     }
     if (this.state === 'ready') {
       this.state = 'playing';
-    } else if (this.state === 'game_over') {
-      this.initGame();
-      this.state = 'playing';
     }
   }
 
-  // DEBUG: spawn merge item on space
-  private spawnMergeItem() {
-    this.foodSpawner.spawnMerge(this.food, this.snake);
+  private restartGame() {
+    this.initGame();
+    this.showTutorial = true;
+    // state is 'ready' from initGame, tutorial will show
+  }
+
+  private hitRestartButton(canvasX: number, canvasY: number): boolean {
+    const r = this.renderer.restartButtonRect;
+    if (!r) return false;
+    return canvasX >= r.x && canvasX <= r.x + r.w && canvasY >= r.y && canvasY <= r.y + r.h;
+  }
+
+  private handleGameOverTap(e: TouchEvent) {
+    const t = e.touches[0];
+    if (!t) return;
+    const rect = this.ctx.canvas.getBoundingClientRect();
+    const canvasX = (t.clientX - rect.left) * (CANVAS_WIDTH / rect.width);
+    const canvasY = (t.clientY - rect.top) * (CANVAS_HEIGHT / rect.height);
+    if (this.hitRestartButton(canvasX, canvasY)) {
+      this.restartGame();
+    }
+  }
+
+  private handleGameOverClick(e: MouseEvent) {
+    const rect = this.ctx.canvas.getBoundingClientRect();
+    const canvasX = (e.clientX - rect.left) * (CANVAS_WIDTH / rect.width);
+    const canvasY = (e.clientY - rect.top) * (CANVAS_HEIGHT / rect.height);
+    if (this.hitRestartButton(canvasX, canvasY)) {
+      this.restartGame();
+    }
   }
 
   private initGame() {
@@ -123,7 +151,8 @@ export class Game {
     this.roundClearInfo = {
       lastPopTime: performance.now(),
       segmentScore: 0,
-      bonus: this.round * ROUND_CLEAR_BONUS_BASE,
+      bonus: this.round * this.round * ROUND_CLEAR_BONUS_BASE,
+      headBonus: 0,
       phase: 'popping',
       showStartTime: 0,
     };
@@ -236,7 +265,8 @@ export class Game {
           info.lastPopTime = now;
         }
         if (this.snake.segments.length <= 1) {
-          this.score += info.bonus;
+          info.headBonus = this.snake.head.value * MERGE_BASE_SCORE * this.round;
+          this.score += info.bonus + info.headBonus;
           this.sound.roundClear();
           navigator.vibrate?.(100);
           info.phase = 'showing';
@@ -256,6 +286,7 @@ export class Game {
     }
 
     const clearBonus = this.roundClearInfo?.phase === 'showing' ? this.roundClearInfo.bonus : 0;
+    const clearHeadBonus = this.roundClearInfo?.phase === 'showing' ? this.roundClearInfo.headBonus : 0;
 
     this.renderer.render(
       this.ctx,
@@ -268,6 +299,7 @@ export class Game {
       this.state,
       dt,
       clearBonus,
+      clearHeadBonus,
       this.showTutorial,
       this.input.joystick,
       this.input.activeDpadDir,

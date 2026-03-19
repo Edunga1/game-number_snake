@@ -35,7 +35,7 @@ export const CHAIN_MULTIPLIER = 2; // each chain step multiplies score
 
 // Round progression
 export const ROUND_1_TARGET_SCORE = 600;
-export const ROUND_SCORE_MULTIPLIER = 1.8;
+export const ROUND_SCORE_MULTIPLIER = 2.0;
 export const ROUND_SPEED_DECREASE = 30; // ms faster per round
 export const MIN_TICK_MS = 150;
 export const ROUND_CLEAR_POP_MS = 100; // ms between each segment pop
