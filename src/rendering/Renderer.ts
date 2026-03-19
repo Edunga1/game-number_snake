@@ -537,7 +537,7 @@ export class Renderer {
 
     ctx.fillStyle = '#fff';
     ctx.font = '14px monospace';
-    ctx.fillText('Tap to restart', cx, btnY + btnH / 2);
+    ctx.fillText('Restart', cx, btnY + btnH / 2);
     ctx.globalAlpha = 1;
 
     this.restartButtonRect = { x: btnX, y: btnY, w: btnW, h: btnH };
