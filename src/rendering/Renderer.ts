@@ -62,7 +62,11 @@ export class Renderer {
 
     if (state === 'game_over') {
       this.renderGameOver(ctx, score);
-    } else if (state === 'round_clear') {
+    } else {
+      this.restartButtonRect = null;
+    }
+
+    if (state === 'round_clear') {
       this.renderRoundClear(ctx, round, roundClearBonus);
     } else if (state === 'ready' && showTutorial) {
       this.renderTutorial(ctx);
@@ -495,6 +499,9 @@ export class Renderer {
     }
   }
 
+  /** Rect of the restart button in canvas coords (set each frame during game_over) */
+  restartButtonRect: { x: number; y: number; w: number; h: number } | null = null;
+
   private renderGameOver(ctx: CanvasRenderingContext2D, score: number) {
     ctx.fillStyle = 'rgba(0,0,0,0.7)';
     ctx.fillRect(0, 0, CANVAS_WIDTH, GRID_HEIGHT);
@@ -512,9 +519,28 @@ export class Renderer {
     ctx.font = 'bold 24px monospace';
     ctx.fillText(`${score}`, cx, cy + 5);
 
-    ctx.fillStyle = '#aaa';
-    ctx.font = '12px monospace';
-    ctx.fillText('Tap to restart', cx, cy + 40);
+    // Restart button below score
+    const btnY = cy + 30;
+    const btnW = 160;
+    const btnH = 32;
+    const btnX = cx - btnW / 2;
+
+    const pulse = Math.sin(performance.now() / 400) * 0.15 + 0.85;
+    ctx.globalAlpha = pulse;
+    ctx.fillStyle = 'rgba(255,255,255,0.1)';
+    ctx.beginPath();
+    ctx.roundRect(btnX, btnY, btnW, btnH, 8);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.fillStyle = '#fff';
+    ctx.font = '14px monospace';
+    ctx.fillText('Tap to restart', cx, btnY + btnH / 2);
+    ctx.globalAlpha = 1;
+
+    this.restartButtonRect = { x: btnX, y: btnY, w: btnW, h: btnH };
   }
 
   private renderOverlay(ctx: CanvasRenderingContext2D, title: string, subtitle: string, color: string) {
