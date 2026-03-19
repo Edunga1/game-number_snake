@@ -1,5 +1,6 @@
 import { Snake } from '../entities/Snake';
 import { MergeSystem } from '../systems/MergeSystem';
+import { Direction } from '../types';
 import { CELL_SIZE, COLOR_SNAKE_HEAD, COLOR_MERGE_GLOW, GRID_COLS } from '../constants';
 import { getValueColor } from '../utils/colors';
 
@@ -32,6 +33,7 @@ export class SnakeRenderer {
       const offsets = this.getWrapOffsets(seg.pos.x, seg.pos.y);
       for (const [ox, oy] of offsets) {
         this.drawSegment(ctx, ox, oy, seg.value, isHead, scale, glowing);
+        if (isHead) this.drawDirectionArrow(ctx, ox, oy, snake.direction);
       }
     }
   }
@@ -87,6 +89,42 @@ export class SnakeRenderer {
       this.roundRect(ctx, x + 2, y + 2, CELL_SIZE - 4, CELL_SIZE - 4, 8);
       ctx.stroke();
     }
+  }
+
+  private drawDirectionArrow(ctx: CanvasRenderingContext2D, x: number, y: number, dir: Direction) {
+    const cx = x + CELL_SIZE / 2;
+    const cy = y + CELL_SIZE / 2;
+    const s = 6;
+    const t = (performance.now() % 800) / 800;
+
+    ctx.globalAlpha = 0.4 + t * 0.4;
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    switch (dir) {
+      case Direction.Up:
+        ctx.moveTo(cx, y - s);
+        ctx.lineTo(cx - s, y);
+        ctx.lineTo(cx + s, y);
+        break;
+      case Direction.Down:
+        ctx.moveTo(cx, y + CELL_SIZE + s);
+        ctx.lineTo(cx - s, y + CELL_SIZE);
+        ctx.lineTo(cx + s, y + CELL_SIZE);
+        break;
+      case Direction.Left:
+        ctx.moveTo(x - s, cy);
+        ctx.lineTo(x, cy - s);
+        ctx.lineTo(x, cy + s);
+        break;
+      case Direction.Right:
+        ctx.moveTo(x + CELL_SIZE + s, cy);
+        ctx.lineTo(x + CELL_SIZE, cy - s);
+        ctx.lineTo(x + CELL_SIZE, cy + s);
+        break;
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.globalAlpha = 1;
   }
 
   private roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
