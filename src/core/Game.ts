@@ -73,7 +73,85 @@ export class Game {
     });
 
     this.initGame();
+
+    // Store screenshot generator: append ?screenshot=1 or ?screenshot=2 to URL.
+    // Renders a staged game scene at 3x resolution and auto-downloads as PNG.
+    // Mode 1: mid-game play scene, Mode 2: merge animation scene.
+    const params = new URLSearchParams(window.location.search);
+    const ss = params.get('screenshot');
+    if (ss) {
+      this.setupScreenshot(parseInt(ss));
+      if (parseInt(ss) === 2) {
+        this.state = 'merging';
+        this.mergeSystem.startMergeScan(this.snake);
+      }
+      const scale = 3;
+      canvas.width = CANVAS_WIDTH * scale;
+      canvas.height = CANVAS_HEIGHT * scale;
+      this.ctx.scale(scale, scale);
+      this.render(0);
+      // Auto download
+      const dl = document.createElement('a');
+      dl.download = 'screenshot-' + ss + '.png';
+      dl.href = canvas.toDataURL('image/png');
+      dl.click();
+      return;
+    }
+
     this.loop.start();
+  }
+
+  /** Screenshot presets: ?screenshot=1 or ?screenshot=2 */
+  private setupScreenshot(mode: number) {
+    this.showTutorial = false;
+    this.state = 'playing';
+    this.food.clear();
+
+    if (mode === 1) {
+      // Scene 1: Mid-game play with long snake and diverse food
+      this.round = 2;
+      this.score = 720;
+      this.snake.segments = [
+        { pos: { x: 8, y: 10 }, value: 16 },
+        { pos: { x: 7, y: 10 }, value: 8 },
+        { pos: { x: 6, y: 10 }, value: 8 },
+        { pos: { x: 5, y: 10 }, value: 4 },
+        { pos: { x: 4, y: 10 }, value: 4 },
+        { pos: { x: 3, y: 10 }, value: 2 },
+        { pos: { x: 3, y: 11 }, value: 2 },
+        { pos: { x: 3, y: 12 }, value: 1 },
+      ];
+      this.food.items = [
+        { pos: { x: 10, y: 8 }, value: 4, type: 'normal' },
+        { pos: { x: 6, y: 14 }, value: 2, type: 'normal' },
+        { pos: { x: 11, y: 12 }, value: 8, type: 'normal' },
+        { pos: { x: 1, y: 6 }, value: 1, type: 'normal' },
+        { pos: { x: 9, y: 16 }, value: 0, type: 'merge' },
+        { pos: { x: 12, y: 5 }, value: 3, type: 'normal' },
+        { pos: { x: 5, y: 18 }, value: 16, type: 'normal' },
+        { pos: { x: 2, y: 15 }, value: 0, type: 'removal' },
+      ];
+    } else if (mode === 2) {
+      // Scene 2: About to merge - adjacent same numbers
+      this.round = 3;
+      this.score = 1850;
+      this.snake.segments = [
+        { pos: { x: 9, y: 12 }, value: 32 },
+        { pos: { x: 8, y: 12 }, value: 8 },
+        { pos: { x: 7, y: 12 }, value: 8 },
+        { pos: { x: 6, y: 12 }, value: 4 },
+        { pos: { x: 6, y: 13 }, value: 4 },
+        { pos: { x: 6, y: 14 }, value: 2 },
+      ];
+      this.food.items = [
+        { pos: { x: 10, y: 10 }, value: 0, type: 'merge' },
+        { pos: { x: 3, y: 8 }, value: 4, type: 'normal' },
+        { pos: { x: 11, y: 15 }, value: 2, type: 'normal' },
+        { pos: { x: 1, y: 18 }, value: 8, type: 'normal' },
+        { pos: { x: 8, y: 6 }, value: 1, type: 'normal' },
+        { pos: { x: 12, y: 19 }, value: 0, type: 'removal' },
+      ];
+    }
   }
 
   get targetScore(): number {
