@@ -5,6 +5,7 @@ export class FoodManager {
   items: FoodItem[] = [];
 
   add(item: FoodItem) {
+    item.spawnTime = performance.now();
     this.items.push(item);
   }
 

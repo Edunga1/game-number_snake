@@ -25,6 +25,7 @@ export interface FoodItem {
   pos: Vec2;
   value: number;
   type: 'normal' | 'removal' | 'merge';
+  spawnTime: number;
 }
 
 export interface MergeEvent {

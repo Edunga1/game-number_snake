@@ -19,7 +19,7 @@ export class FoodSpawner {
       const pos = this.findEmptyCell(foodManager, snake);
       if (!pos) break;
       const pick = this.pickFoodValue(snake, maxFoodValue);
-      foodManager.add({ pos, value: pick.value, type: pick.type });
+      foodManager.add({ pos, value: pick.value, type: pick.type, spawnTime: 0 });
     }
   }
 
@@ -27,7 +27,7 @@ export class FoodSpawner {
     const pos = this.findEmptyCell(foodManager, snake);
     if (!pos) return null;
     const pick = this.pickFoodValue(snake, maxFoodValue);
-    const item: FoodItem = { pos, value: pick.value, type: pick.type };
+    const item: FoodItem = { pos, value: pick.value, type: pick.type, spawnTime: 0 };
     foodManager.add(item);
     return item;
   }
@@ -35,7 +35,7 @@ export class FoodSpawner {
   spawnMerge(foodManager: FoodManager, snake: Snake): void {
     const pos = this.findEmptyCell(foodManager, snake);
     if (pos) {
-      foodManager.add({ pos, value: 0, type: 'merge' });
+      foodManager.add({ pos, value: 0, type: 'merge', spawnTime: 0 });
     }
   }
 

@@ -1,11 +1,14 @@
 import { FoodManager } from '../entities/Food';
 import { Snake } from '../entities/Snake';
-import { CELL_SIZE, COLOR_FOOD_SAFE, COLOR_FOOD_DANGER, COLOR_FOOD_MERGEABLE, COLOR_FOOD_REMOVAL, COLOR_FOOD_MERGE } from '../constants';
+import { CELL_SIZE, COLOR_BG, COLOR_FOOD_SAFE, COLOR_FOOD_DANGER, COLOR_FOOD_MERGEABLE, COLOR_FOOD_REMOVAL, COLOR_FOOD_MERGE } from '../constants';
+
+const SPAWN_ANIM_MS = 250;
 
 export class FoodRenderer {
   render(ctx: CanvasRenderingContext2D, foodManager: FoodManager, snake: Snake) {
     const headValue = snake.head.value;
     const tailValue = snake.tail.value;
+    const now = performance.now();
 
     for (const food of foodManager.items) {
       const x = food.pos.x * CELL_SIZE;
@@ -13,6 +16,18 @@ export class FoodRenderer {
       const cx = x + CELL_SIZE / 2;
       const cy = y + CELL_SIZE / 2;
       const radius = CELL_SIZE * 0.35;
+
+      // Spawn pop animation
+      const elapsed = now - food.spawnTime;
+      const animating = elapsed < SPAWN_ANIM_MS;
+      if (animating) {
+        const t = elapsed / SPAWN_ANIM_MS;
+        const scale = 1 + 0.3 * Math.sin(t * Math.PI) * (1 - t);
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.scale(scale, scale);
+        ctx.translate(-cx, -cy);
+      }
 
       if (food.type === 'removal') {
         // Removal block: purple with ✕
@@ -33,6 +48,7 @@ export class FoodRenderer {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText('✂', cx, cy);
+        if (animating) ctx.restore();
         continue;
       }
 
@@ -56,11 +72,12 @@ export class FoodRenderer {
         ctx.shadowBlur = 0;
 
         // "M" label
-        ctx.fillStyle = '#1a1a2e';
+        ctx.fillStyle = COLOR_BG;
         ctx.font = 'bold 14px monospace';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText('M', cx, cy);
+        if (animating) ctx.restore();
         continue;
       }
 
@@ -93,7 +110,7 @@ export class FoodRenderer {
       ctx.shadowBlur = 0;
 
       // Number
-      ctx.fillStyle = isDangerous ? '#fff' : '#1a1a2e';
+      ctx.fillStyle = isDangerous ? '#fff' : COLOR_BG;
       ctx.font = 'bold 13px monospace';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
@@ -109,6 +126,10 @@ export class FoodRenderer {
         ctx.moveTo(x + CELL_SIZE - 8, y + 8);
         ctx.lineTo(x + 8, y + CELL_SIZE - 8);
         ctx.stroke();
+      }
+
+      if (animating) {
+        ctx.restore();
       }
     }
   }

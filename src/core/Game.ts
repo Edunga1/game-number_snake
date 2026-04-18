@@ -137,14 +137,14 @@ export class Game {
         { pos: { x: 3, y: 12 }, value: 1 },
       ];
       this.food.items = [
-        { pos: { x: 10, y: 8 }, value: 4, type: 'normal' },
-        { pos: { x: 6, y: 14 }, value: 2, type: 'normal' },
-        { pos: { x: 11, y: 12 }, value: 8, type: 'normal' },
-        { pos: { x: 1, y: 6 }, value: 1, type: 'normal' },
-        { pos: { x: 9, y: 16 }, value: 0, type: 'merge' },
-        { pos: { x: 12, y: 5 }, value: 3, type: 'normal' },
-        { pos: { x: 5, y: 18 }, value: 16, type: 'normal' },
-        { pos: { x: 2, y: 15 }, value: 0, type: 'removal' },
+        { pos: { x: 10, y: 8 }, value: 4, type: 'normal', spawnTime: 0 },
+        { pos: { x: 6, y: 14 }, value: 2, type: 'normal', spawnTime: 0 },
+        { pos: { x: 11, y: 12 }, value: 8, type: 'normal', spawnTime: 0 },
+        { pos: { x: 1, y: 6 }, value: 1, type: 'normal', spawnTime: 0 },
+        { pos: { x: 9, y: 16 }, value: 0, type: 'merge', spawnTime: 0 },
+        { pos: { x: 12, y: 5 }, value: 3, type: 'normal', spawnTime: 0 },
+        { pos: { x: 5, y: 18 }, value: 16, type: 'normal', spawnTime: 0 },
+        { pos: { x: 2, y: 15 }, value: 0, type: 'removal', spawnTime: 0 },
       ];
     } else if (mode === 2) {
       // Scene 2: About to merge - adjacent same numbers
@@ -159,12 +159,12 @@ export class Game {
         { pos: { x: 6, y: 14 }, value: 2 },
       ];
       this.food.items = [
-        { pos: { x: 10, y: 10 }, value: 0, type: 'merge' },
-        { pos: { x: 3, y: 8 }, value: 4, type: 'normal' },
-        { pos: { x: 11, y: 15 }, value: 2, type: 'normal' },
-        { pos: { x: 1, y: 18 }, value: 8, type: 'normal' },
-        { pos: { x: 8, y: 6 }, value: 1, type: 'normal' },
-        { pos: { x: 12, y: 19 }, value: 0, type: 'removal' },
+        { pos: { x: 10, y: 10 }, value: 0, type: 'merge', spawnTime: 0 },
+        { pos: { x: 3, y: 8 }, value: 4, type: 'normal', spawnTime: 0 },
+        { pos: { x: 11, y: 15 }, value: 2, type: 'normal', spawnTime: 0 },
+        { pos: { x: 1, y: 18 }, value: 8, type: 'normal', spawnTime: 0 },
+        { pos: { x: 8, y: 6 }, value: 1, type: 'normal', spawnTime: 0 },
+        { pos: { x: 12, y: 19 }, value: 0, type: 'removal', spawnTime: 0 },
       ];
     }
   }
