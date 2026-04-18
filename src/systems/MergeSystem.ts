@@ -77,7 +77,7 @@ export class MergeSystem {
       snake.segments[pair.index].value = pair.resultValue;
       snake.segments.splice(pair.index + 1, 1);
       this.completedMerges.push({ pos, resultValue: pair.resultValue, chainStep: this.passCount });
-      this.pendingScore += MERGE_BASE_SCORE * pair.resultValue * Math.pow(CHAIN_MULTIPLIER, this.passCount - 1);
+      this.pendingScore += MERGE_BASE_SCORE * pair.resultValue * (1 + CHAIN_MULTIPLIER * (this.passCount - 1));
     }
 
     this.compactPositions(snake);
@@ -132,6 +132,10 @@ export class MergeSystem {
       else if (ny >= PLAY_Y_OFFSET + PLAY_ROWS) ny = PLAY_Y_OFFSET;
       segs[i].pos = { x: nx, y: ny };
     }
+  }
+
+  get chainCount(): number {
+    return this.passCount;
   }
 
   getMergeAnimInfo(): { pairs: { index: number }[]; phase: 'glow' | 'shrink'; progress: number } | null {
