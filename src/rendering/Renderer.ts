@@ -28,7 +28,6 @@ export class Renderer {
 
   constructor() {
     this.sprites = new SpriteGenerator();
-    this.snakeRenderer.setSprites(this.sprites);
     this.foodRenderer.setSprites(this.sprites);
     this.hudRenderer.setSprites(this.sprites);
   }

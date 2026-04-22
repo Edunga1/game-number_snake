@@ -3,15 +3,7 @@ import { MergeSystem } from '../systems/MergeSystem';
 import { Direction } from '../types';
 import { CELL_SIZE, COLOR_SNAKE_HEAD, COLOR_MERGE_GLOW, GRID_COLS } from '../constants';
 import { getValueColor } from '../utils/colors';
-import { SpriteGenerator } from './SpriteGenerator';
-
 export class SnakeRenderer {
-  private sprites: SpriteGenerator | null = null;
-
-  setSprites(sprites: SpriteGenerator) {
-    this.sprites = sprites;
-  }
-
   render(ctx: CanvasRenderingContext2D, snake: Snake, mergeSystem: MergeSystem) {
     const mergeInfo = mergeSystem.getMergeAnimInfo();
 
@@ -39,7 +31,7 @@ export class SnakeRenderer {
       // Draw segment (and ghost copy at wrap edge if near boundary)
       const offsets = this.getWrapOffsets(seg.pos.x, seg.pos.y);
       for (const [ox, oy] of offsets) {
-        this.drawSegment(ctx, ox, oy, seg.value, isHead, scale, glowing, isHead ? snake.direction : undefined);
+        this.drawSegment(ctx, ox, oy, seg.value, isHead, scale, glowing);
         if (isHead) this.drawDirectionArrow(ctx, ox, oy, snake.direction);
       }
     }
@@ -61,7 +53,6 @@ export class SnakeRenderer {
   private drawSegment(
     ctx: CanvasRenderingContext2D, x: number, y: number,
     value: number, isHead: boolean, scale: number, glowing: boolean,
-    direction?: Direction,
   ) {
     const pad = CELL_SIZE * (1 - scale) * 0.5;
     const size = CELL_SIZE * scale;
